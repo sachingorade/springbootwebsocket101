@@ -2,7 +2,6 @@ package com.ts.learning.sws101.ws;
 
 import com.ts.learning.sws101.AbstractIntegrationTest;
 import com.ts.learning.sws101.client.WebSocketClient;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import javax.websocket.DeploymentException;
