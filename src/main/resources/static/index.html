@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Test Web Socket Client</title>
+    <style>
+        .clsContainer {
+            border: 1px solid #000;
+            overflow: auto;
+            padding: 10px;
+            margin-top: 20px;
+        }
+        .clsContainer::after {
+            clear: both;
+        }
+        .clsUsersList {
+            width: 250px;
+            min-height: 250px;
+            float: left;
+            border: 1px solid #eee;
+        }
+        #idMessages {
+            min-height: 250px;
+            border: 1px solid #eee;
+            margin-left: 10px;
+            overflow: auto;
+        }
+    </style>
+    <script>
+        let ws = window.ws;
+
+        function handleOnOpen() {
+            window.ws = ws;
+        }
+
+        function initWsClient() {
+            ws = new WebSocket("ws://localhost:8080/swsc");
+            ws.onopen = handleOnOpen;
+            ws.onmessage = onMessage;
+        }
+
+        function joinChat() {
+            let userName = document.getElementById("dUserId").value;
+            if (userName.trim().length) {
+                let joinMessage = { type: "JOIN", userName: userName.trim() };
+                ws.send(JSON.stringify(joinMessage));
+            }
+        }
+
+        function sendMessage() {
+            let toUser = document.getElementById("dToUserId").value;
+            let msg = document.getElementById("dMessage").value;
+            if (toUser.trim().length && msg.trim().length) {
+                let message = { type: "TO_MSG", toUser: toUser.trim(), message: msg.trim() };
+                ws.send(JSON.stringify(message));
+            }
+        }
+
+        function onMessage(ev) {
+            let serverMsg = JSON.parse(ev.data);
+
+            let newMsg = document.createElement("div");
+            let userDiv = document.createElement("div");
+            userDiv.innerText = serverMsg.fromUser;
+            let msgDiv = document.createElement("div");
+            msgDiv.innerText = serverMsg.message;
+
+            newMsg.appendChild(userDiv);
+            newMsg.appendChild(msgDiv);
+
+            document.getElementById("idMessages").appendChild(newMsg);
+        }
+
+        function loadCheck() {
+            if (ws == null) {
+                console.log("No Web socket session!");
+                initWsClient();
+            }
+        }
+    </script>
+</head>
+    <body>
+    <div>
+        <label for="dUserId">User Name</label><input id="dUserId" type="text"/> <button onclick="joinChat()">Join</button>
+    </div>
+    <div>
+        <label for="dToUserId">To User</label><input id="dToUserId" type="text"/> <br/>
+        <label for="dMessage">Message</label><input id="dMessage" type="text"/> <button onclick="sendMessage()">Join</button>
+    </div>
+    <div class="clsContainer">
+        <div class="clsUsersList">
+        </div>
+        <div id="idMessages">
+        </div>
+    </div>
+    <script>
+        loadCheck();
+    </script>
+    </body>
+</html>

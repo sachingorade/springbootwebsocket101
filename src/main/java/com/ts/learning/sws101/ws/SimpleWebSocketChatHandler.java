@@ -32,6 +32,7 @@ public class SimpleWebSocketChatHandler implements WebSocketHandler {
 
     @Override
     public void afterConnectionEstablished(WebSocketSession webSocketSession) throws Exception {
+        logger.info("Web socket session established :[{}]", webSocketSession);
     }
 
     @Override
